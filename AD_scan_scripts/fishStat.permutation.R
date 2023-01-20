@@ -11,15 +11,12 @@ cores=availableCores()
 cl=makeCluster(cores[1]-1)
 registerDoParallel(cl)
 
-#args=commandArgs(trailingOnly = TRUE)
-map.file <- c("/scratch/project_2003480/patrick/analyses/ADscan/output/map/painted_genotypes_males_95percAFD_Scaffold01.map")
-ped.file <- c("/scratch/project_2003480/patrick/analyses/ADscan/output/ped/painted_genotypes_males_95percAFD_Scaffold01.ped")
-args <- c(map.file,ped.file)
-
+args=commandArgs(trailingOnly = TRUE)
 
 map=read.table(args[1])
+print(paste0("Loaded .map file: ", args[1]))
 ped=read.table(args[2])
-my.scaffold=args[3]
+print(paste0("Loaded .ped file: ", args[2]))
 
 sampleName=ped[,1]
 geno=as.matrix(ped[,seq(7,length(ped[1,]),2)])
@@ -105,6 +102,6 @@ output=foreach(i = 1:(nMarker-1), .combine='rbind') %:%
 colnames(output)=c("#Pos1", "Pos2", "P1", "P2", "00", "11", "01", "10", "D", "Dprime", "sk2", "sigma2", "x2", "sampleSize", "D2_11", "D2_00", "D2_10", "D2_01")
 
 
-write.table(output, file=args[3], quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
+write.table(output, file=paste0(args[3]), quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
 
 stopCluster(cl)
