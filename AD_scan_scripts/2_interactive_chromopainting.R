@@ -13,6 +13,7 @@ library(stringr)
 ###
 #### Step 1. Read data ----
 ###
+print(paste0("### Reading data ..."))
 
 # metadata - you need it to determine the ploidy (sex) of your individuals 
 # smpl = read.table("sample_table_R_ordered_LanFix.tab", h=T, comment.char = "", as.is = T)
@@ -92,10 +93,10 @@ hyb = dat[, -c(1:2)] # remove CHR & POS cols
 
 #### Step 4. Check for het sites ----
 
-
+print(paste0("### Checking for het sites in gentype matrix ..."))
 # check that all sites in the genotype matrix are homozygous
 
-head(hyb)
+# head(hyb)
 
 hyb.chr1 = hyb.chr2 = matrix(data = NA, ncol = ncol(hyb), nrow = nrow(hyb))
 for (i in 1:ncol(hyb)){  # we loop over individuals - cols in geno, rows in metadata
@@ -107,7 +108,8 @@ colnames(hyb.chr1) = colnames(hyb.chr2) = names(hyb)
 
 
 hom.check <- hyb.chr1==hyb.chr2
-sum(!hom.check)
+print(paste0("Found ",sum(!hom.check), " sites with het genotypes."))
+
 
 # recode het sites as missing data
 
@@ -115,7 +117,7 @@ hyb.chr1[hyb.chr1!=hyb.chr2] <- "N"
 hyb.chr2[hyb.chr1!=hyb.chr2] <- "N"
 
 hom.check <- hyb.chr1==hyb.chr2
-sum(!hom.check)
+print(paste0("Found ",sum(!hom.check), " het sites after recoding to missing."))
 
 
 # Tag missing data (Ns in geno are missing)
@@ -157,6 +159,9 @@ write.table(x = writedat,
 ###
 #### Step 6. Output .ped and .map files ----
 ###
+
+print(paste0("### Creating .ped and .map files..."))
+
 
 # This script converts the painted genotype matrix into .ped and .map files
 # for input to plink

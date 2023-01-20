@@ -3,12 +3,12 @@
 #SBATCH --account=project_2003480
 #SBATCH --output=/scratch/project_2003480/patrick/analyses/ADscan/logs/AD_scan_%j.out
 #SBATCH --error=/scratch/project_2003480/patrick/analyses/ADscan/logs/AD_scan_%j.err
-#SBATCH --partition=hugemem
+#SBATCH --partition=small
 #SBATCH --time=72:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --nodes=1
-#SBATCH --mem-per-cpu=150G
+#SBATCH --mem-per-cpu=400M
 #SBATCH --array=1
 
 ###
@@ -58,7 +58,7 @@ SUBSAMPLE=700
 echo Preparing to subsample $SUBSAMPLE sites ...
 
 # randomly remove positions until only 700 are left
-plink --map $MAP_ORIG --ped $PED_ORIG --allow-extra-chr --make-bed --thin-count ${SUBSAMPLE} --out painted_genotypes_males_95percAFD_wholegenome_09LDthinned_${SUBSAMPLE}subsample_${SLURM_ARRAY_TASK_ID}
+plink --map $MAP_ORIG --ped $PED_ORIG --threads $SLURM_CPUS_PER_TASK --allow-extra-chr --make-bed --thin-count ${SUBSAMPLE} --out painted_genotypes_males_95percAFD_wholegenome_09LDthinned_${SUBSAMPLE}subsample_${SLURM_ARRAY_TASK_ID}
 
 cut -f 2 painted_genotypes_males_95percAFD_wholegenome_09LDthinned_${SUBSAMPLE}subsample_${SLURM_ARRAY_TASK_ID}.bim > painted_genotypes_males_95percAFD_wholegenome_09LDthinned_${SUBSAMPLE}subsample_${SLURM_ARRAY_TASK_ID}.prune.in
 rm cut -f 2 painted_genotypes_males_95percAFD_wholegenome_09LDthinned_${SUBSAMPLE}subsample_${SLURM_ARRAY_TASK_ID}.bed
